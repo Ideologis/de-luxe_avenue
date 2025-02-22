@@ -106,7 +106,7 @@ const NavBar = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block py-2 text-lg font-medium hover:text-gray-900"
+                  className="block py-2 bg-white text-lg font-medium hover:text-gray-900"
                   onClick={toggleMenu}
                 >
                   {link.name}
@@ -147,8 +147,6 @@ const NavBar = () => {
             <input
               type="text"
               placeholder="Search"
-              // value={searchQuery}
-              // onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-gray-100 rounded-md py-2 pl-4 pr-10 focus:outline-none"
             />
             <FiSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />

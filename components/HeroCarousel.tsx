@@ -50,9 +50,9 @@ const HeroCarousel = () => {
                 <Image
                   src={slide.image}
                   alt={slide.title}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-lg"
+                  fill
+                  priority={index === 0}
+                  className="rounded-lg object-cover"
                 />
               </div>
 
@@ -84,7 +84,7 @@ const HeroCarousel = () => {
                       alt={slide.title}
                       width={400}
                       height={400}
-                      layout="responsive"
+                      sizes="(max-width: 768px) 100vw, 400px"
                       className="rounded-lg object-cover"
                     />
                     <div className="absolute inset-0 rounded-lg shadow-inner pointer-events-none" />
