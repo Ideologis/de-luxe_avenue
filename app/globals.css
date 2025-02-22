@@ -109,3 +109,32 @@ body {
     margin-right: env(safe-area-inset-right);
   }
 }
+
+/* Swiper Navigation Styles */
+.swiper-button-next,
+.swiper-button-prev {
+  width: 40px !important;
+  height: 40px !important;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  color: #000 !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 20px !important;
+  font-weight: bold;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.swiper-button-disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed;
+}
