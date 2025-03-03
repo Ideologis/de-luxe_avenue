@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -42,39 +43,41 @@ const NewArrivalCarousel = () => {
         }}
         className="w-full"
       >
-        {newArrivals.map((item, index) => (
-          <SwiperSlide key={index}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="flex flex-col items-center"
-            >
+        {newArrivals.map(
+          (item: { image: string; title: string }, index: number) => (
+            <SwiperSlide key={index}>
               <motion.div
-                className="relative w-full h-64"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="flex flex-col items-center"
               >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  style={{ objectFit: "cover" }}
-                  className="rounded-lg"
-                />
+                <motion.div
+                  className="relative w-full h-64"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    style={{ objectFit: "cover" }}
+                    className="rounded-lg"
+                  />
+                </motion.div>
+                <motion.h3
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
+                  className="mt-2 text-lg font-semibold text-center"
+                >
+                  {item.title}
+                </motion.h3>
               </motion.div>
-              <motion.h3
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
-                className="mt-2 text-lg font-semibold text-center"
-              >
-                {item.title}
-              </motion.h3>
-            </motion.div>
-          </SwiperSlide>
-        ))}
+            </SwiperSlide>
+          )
+        )}
       </Swiper>
     </div>
   );

@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import Link from "next/link";
 import { BsHeart } from "react-icons/bs";
 import { CiUser } from "react-icons/ci";
@@ -108,6 +109,7 @@ const NavBar = () => {
                   href={link.href}
                   className="block py-2 bg-white text-lg font-medium hover:text-gray-900"
                   onClick={toggleMenu}
+                  passHref
                 >
                   {link.name}
                 </Link>
@@ -136,6 +138,7 @@ const NavBar = () => {
               key={link.href}
               href={link.href}
               className="block py-4 md:py-0 hover:text-gray-900 px-3 text-sm font-medium"
+              passHref
             >
               {link.name}
             </Link>
