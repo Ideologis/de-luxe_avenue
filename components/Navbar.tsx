@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { MdShoppingBasket } from "react-icons/md";
 import { BsHeart } from "react-icons/bs";
 import { CiUser } from "react-icons/ci";
-import { MdShoppingBasket } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -30,10 +30,12 @@ const NavBar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  
   const handleCartNavigation = () => {
     dispatch(setLoading(true));
     router.push("/cart");
   };
+  
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     document.body.style.overflow = !isOpen ? "hidden" : "auto";
@@ -48,7 +50,6 @@ const NavBar = () => {
 
   return (
     <>
-
       <nav
         className={`fixed w-full z-50 transition-all duration-300 ${
           hasScrolled ? "bg-white/90 backdrop-blur-md shadow-md" : "bg-white"
@@ -117,7 +118,11 @@ const NavBar = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-gray-100 rounded-lg py-3 pl-4 pr-10 focus:outline-none"
                 />
-                <FiSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <FiSearch
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  aria-hidden="true"
+                
+                />
               </div>
 
               {/* Mobile Navigation Links */}
@@ -179,7 +184,10 @@ const NavBar = () => {
                 placeholder="Search"
                 className="w-full bg-gray-100 rounded-md py-2 pl-4 pr-10 focus:outline-none"
               />
-              <FiSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FiSearch
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                aria-hidden="true"
+              />
             </div>
           </div>
           <section className="navIcons hidden md:flex items-center space-x-6 px-3">

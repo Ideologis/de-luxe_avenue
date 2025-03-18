@@ -13,9 +13,9 @@ const useNewArrivals = () => {
   const dispatch = useAppDispatch();
   const [newArrivals, setNewArrivals] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-useEffect(() => {
+  useEffect(() => {
     dispatch(setLoading(false));
-  }, []);
+  }, [dispatch]);
   const loadData = async () => {
     try {
       const data = await fetchData("media");
