@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
+import { Providers } from "./Providers";
 import { Sora } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
+import React from "react";
+import { ToastContainer } from "react-toastify";
+import LoadingOverlay from "@/components/LoadingOverlay";
+// Adjust the path to your store file
 
 const sora = Sora({
   variable: "--font-sora",
@@ -21,8 +26,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${sora.variable} antialiased`}>
-        <Navbar />
-        {children}
+        <Providers>
+          <Navbar />
+          <LoadingOverlay />
+          {children}
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+          />
+        </Providers>
       </body>
     </html>
   );
