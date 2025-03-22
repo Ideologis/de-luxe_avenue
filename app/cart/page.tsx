@@ -7,25 +7,26 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// // Define the type for cart items
-// interface CartItem {
-//   productKey: string;
-//   image: string;
-//   title: string;
-//   color?: string;
-//   size?: string;
-//   price: number;
-//   quantity: number;
-//   feedback?: string;
-// }
+interface CartItem {
+  productKey: string;
+  image: string;
+  title: string;
+  price: number;
+  quantity: number; // Added quantity property to CartItem interface
+}
 
 export default function CartPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const cartItems = useAppSelector((state) => Object.values(state.cart.items));
+  const cartItems = useAppSelector(
+    (state: { cart: { items: { [key: string]: CartItem } } }) =>
+      Object.values(state.cart.items)
+  );
+
   useEffect(() => {
     dispatch(setLoading(false));
-  }, []);
+  }, [dispatch]);
+
   const [discountCode, setDiscountCode] = useState("");
 
   const handleContinueShopping = () => {
@@ -55,123 +56,329 @@ export default function CartPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        <div className="grid grid-cols-7 gap-4 font-semibold text-gray-700 border-b pb-2 mb-4 text-sm uppercase tracking-wide">
-          <div className="col-span-2">Product Details</div>
-          <div>Price</div>
-          <div>Quantity</div>
-          <div>Shipping</div>
-          <div>Subtotal</div>
-          <div>Action</div>
+    <>
+      {/* Mobile Layout */}
+      <div className="md:hidden max-w-full mx-auto px-6 py-8 bg-gray-50 min-h-screen">
+        <h1 className="text-2xl font-bold mb-6 text-center">Shopping Cart</h1>
+        <div className="bg-white p-6 rounded-2xl shadow mb-6">
+          {cartItems.length === 0 ? (
+            <div className="flex flex-col items-center py-10">
+              <p className="text-center text-gray-500 mb-6 text-lg">
+                Your cart is empty.
+              </p>
+              <button
+                onClick={handleContinueShopping}
+                className="w-full px-6 py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-md text-lg font-medium"
+              >
+                Start Shopping
+              </button>
+            </div>
+          ) : (
+            cartItems.map((item) => (
+              <div
+                key={item.productKey}
+                className="flex flex-col p-5 mb-5 border-b last:border-b-0"
+              >
+                <div className="flex items-start space-x-5 mb-4">
+                  <div className="relative w-24 h-24 flex-shrink-0">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      className="rounded-xl"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between">
+                      <h3 className="font-semibold text-gray-900 mb-2 text-lg">
+                        {item.title}
+                      </h3>
+                      <button
+                        onClick={() => handleRemoveItem(item.productKey)}
+                        className="text-gray-400 hover:text-red-500 transition-colors text-xl"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                    <p className="text-gray-900 font-medium mb-3 text-base">
+                      ₦{item.price.toFixed(2)}
+                    </p>
+                    <div className="flex flex-col space-y-3">
+                      <div className="flex items-center space-x-1 border rounded-xl overflow-hidden w-fit">
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(
+                              item.productKey,
+                              item.quantity > 1 ? item.quantity - 1 : 1
+                            )
+                          }
+                          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors text-lg font-medium"
+                        >
+                          -
+                        </button>
+                        <span className="px-4 py-2 text-base">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(
+                              item.productKey,
+                              item.quantity + 1
+                            )
+                          }
+                          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors text-lg font-medium"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500 mb-1">
+                          Shipping: {item.quantity > 1 ? "FREE" : "₦5.00"}
+                        </p>
+                        <p className="font-medium text-lg">
+                          ₦
+                          {(
+                            item.price * item.quantity +
+                            (item.quantity === 1 ? 5.0 : 0)
+                          ).toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+
+          {cartItems.length > 0 && (
+            <>
+              <div className="bg-white p-6 rounded-2xl shadow mb-6 mt-6">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Discount Code
+                </h3>
+                <p className="text-base text-gray-500 mb-4">
+                  Enter your coupon code if you have one
+                </p>
+                <div className="flex flex-col space-y-4">
+                  <input
+                    type="text"
+                    value={discountCode}
+                    onChange={(e) => setDiscountCode(e.target.value)}
+                    className="p-4 border border-gray-300 rounded-xl w-full text-base"
+                    placeholder="Enter coupon code"
+                  />
+                  <button className="w-full py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-md text-lg font-medium">
+                    Apply Coupon
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-2xl shadow mb-6">
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-base">
+                    <p className="text-gray-600">Sub Total:</p>
+                    <p className="text-gray-900 font-medium">
+                      ₦{subtotal.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="flex justify-between text-base">
+                    <p className="text-gray-600">Shipping:</p>
+                    <p className="text-gray-900 font-medium">
+                      ₦{shipping.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="border-t pt-3 mt-3">
+                    <div className="flex justify-between">
+                      <p className="text-gray-900 font-semibold text-lg">
+                        Grand Total:
+                      </p>
+                      <p className="text-gray-900 font-semibold text-xl">
+                        ₦{grandTotal.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <Link href="/checkout" className="block w-full">
+                    <button className="w-full py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-md text-lg font-medium">
+                      Proceed to Checkout
+                    </button>
+                  </Link>
+
+                  <button
+                    onClick={handleContinueShopping}
+                    className="w-full py-4 border border-gray-300 rounded-xl hover:bg-gray-100 text-gray-900 transition-colors text-lg font-medium"
+                  >
+                    Continue Shopping
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:block max-w-5xl mx-auto px-4 py-8 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
+        <h1 className="text-3xl font-extrabold mb-6 text-center text-gray-800 tracking-tight">
+          Shopping Cart
+        </h1>
+        <div className="bg-white p-6 rounded-xl shadow-lg mb-6">
+          <div className="grid grid-cols-12 gap-4 font-semibold text-gray-700 border-b pb-4 mb-4">
+            <div className="col-span-5">Product Details</div>
+            <div className="col-span-2 text-center">Price</div>
+            <div className="col-span-2 text-center">Quantity</div>
+            <div className="col-span-1 text-center">Shipping</div>
+            <div className="col-span-1 text-right">Subtotal</div>
+            <div className="col-span-1 text-right">Action</div>
+          </div>
+
+          {cartItems.length === 0 ? (
+            <div className="flex flex-col items-center py-12">
+              <p className="text-center text-gray-600 mb-6 text-lg font-medium">
+                Your cart is empty. Let’s fill it up!
+              </p>
+              <button
+                onClick={handleContinueShopping}
+                className="w-full max-w-xs px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-xl hover:from-purple-600 hover:to-purple-800 transition-all duration-300 shadow-lg text-lg font-semibold"
+              >
+                Start Shopping
+              </button>
+            </div>
+          ) : (
+            cartItems.map((item) => (
+              <div
+                key={item.productKey}
+                className="grid grid-cols-12 gap-4 items-center p-4 border-b border-gray-200 last:border-b-0"
+              >
+                <div className="col-span-5 flex items-center space-x-4">
+                  <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden shadow-sm">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      className="rounded-xl"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-lg">
+                      {item.title}
+                    </h3>
+                  </div>
+                </div>
+                <div className="col-span-2 text-center font-medium text-gray-800">
+                  ₦{item.price.toFixed(2)}
+                </div>
+                <div className="col-span-2 text-center">
+                  <div className="inline-flex items-center space-x-1 border border-gray-300 rounded-lg overflow-hidden">
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(
+                          item.productKey,
+                          item.quantity > 1 ? item.quantity - 1 : 1
+                        )
+                      }
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors duration-200 text-lg font-medium"
+                    >
+                      -
+                    </button>
+                    <span className="px-4 py-2 text-base font-medium text-gray-700">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item.productKey, item.quantity + 1)
+                      }
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors duration-200 text-lg font-medium"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div className="col-span-1 text-center text-sm text-gray-600">
+                  {item.quantity > 1 ? "FREE" : "₦5.00"}
+                </div>
+                <div className="col-span-1 text-right font-semibold text-gray-900">
+                  ₦
+                  {(
+                    item.price * item.quantity +
+                    (item.quantity === 1 ? 5.0 : 0)
+                  ).toFixed(2)}
+                </div>
+                <div className="col-span-1 text-right">
+                  <button
+                    onClick={() => handleRemoveItem(item.productKey)}
+                    className="text-gray-500 hover:text-red-600 transition-colors duration-200 text-xl"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
-        {cartItems.length === 0 ? (
-          <p className="text-center text-gray-500 py-4">Your cart is empty.</p>
-        ) : (
-          cartItems.map((item) => (
-            <div
-              key={item.productKey}
-              className="grid grid-cols-7 gap-4 items-center py-4 border-b"
+        {cartItems.length > 0 && (
+          <div className="bg-white p-6 rounded-xl shadow-lg grid grid-cols-2 gap-4">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Discount Code
+            </h3>
+            <p className="text-base text-gray-600 mb-4">
+              Got a coupon? Enter it here!
+            </p>
+            <div className="flex flex-col space-y-4 col-span-2">
+              <input
+                type="text"
+                value={discountCode}
+                onChange={(e) => setDiscountCode(e.target.value)}
+                className="p-4 border border-gray-300 rounded-xl w-full text-base focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                placeholder="Enter coupon code"
+              />
+              <button className="w-full py-4 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-xl hover:from-purple-600 hover:to-purple-800 transition duration-300 shadow-lg text-lg font-semibold">
+                Apply Coupon
+              </button>
+            </div>
+            <button
+              onClick={handleContinueShopping}
+              className="w-full mt-4 py-4 border border-gray-300 rounded-xl hover:bg-gray-100 text-gray-800 transition duration-200 text-lg font-semibold col-span-2"
             >
-              <div className="col-span-2 flex items-center space-x-4">
-                <div className="relative w-16 h-16">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    className="rounded-lg"
-                  />
+              Continue Shopping
+            </button>
+            <div className="space-y-4 mb-6 mt-6 col-span-2">
+              <div className="flex justify-between text-lg">
+                <p className="text-gray-600 font-medium">Sub Total:</p>
+                <p className="text-gray-900 font-semibold">
+                  ₦{subtotal.toFixed(2)}
+                </p>
+              </div>
+              <div className="flex justify-between text-lg">
+                <p className="text-gray-600 font-medium">Shipping:</p>
+                <p className="text-gray-900 font-semibold">
+                  ₦{shipping.toFixed(2)}
+                </p>
+              </div>
+              <div className="border-t pt-4 mt-4">
+                <div className="flex justify-between">
+                  <p className="text-gray-900 font-bold text-xl">
+                    Grand Total:
+                  </p>
+                  <p className="text-purple-600 font-bold text-2xl">
+                    ₦{grandTotal.toFixed(2)}
+                  </p>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                </div>
-              </div>
-              <div className="text-gray-900">₦{item.price.toFixed(2)}</div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() =>
-                    handleQuantityChange(item.productKey, item.quantity - 1)
-                  }
-                  className="px-2 py-1 bg-gray-200 rounded-l hover:bg-gray-300"
-                >
-                  -
-                </button>
-                <span className="px-3">{item.quantity}</span>
-                <button
-                  onClick={() =>
-                    handleQuantityChange(item.productKey, item.quantity + 1)
-                  }
-                  className="px-2 py-1 bg-gray-200 rounded-r hover:bg-gray-300"
-                >
-                  +
-                </button>
-              </div>
-              <div className="text-gray-900">
-                {item.quantity > 1 ? "FREE" : "₦5.00"}
-              </div>
-              <div className="text-gray-900">
-                ₦
-                {(
-                  item.price * item.quantity +
-                  (item.quantity === 1 ? 5.0 : 0)
-                ).toFixed(2)}
-              </div>
-              <div>
-                <button
-                  onClick={() => handleRemoveItem(item.productKey)}
-                  className="text-purple-600 hover:text-purple-800"
-                >
-                  🗑️
-                </button>
               </div>
             </div>
-          ))
+            <Link href="/checkout" className="block w-full col-span-2">
+              <button className="w-full py-4 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-xl hover:from-purple-600 hover:to-purple-800 transition duration-300 shadow-lg text-lg font-semibold">
+                Proceed to Checkout
+              </button>
+            </Link>
+          </div>
         )}
       </div>
-
-      <div className="flex justify-between mt-6">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">
-            Discount Codes
-          </h3>
-          <p className="text-sm text-gray-500 mb-2">
-            Enter your coupon code if you have one
-          </p>
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              value={discountCode}
-              onChange={(e) => setDiscountCode(e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg w-1/2"
-              placeholder="Enter coupon code"
-            />
-            <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-              Apply Coupon
-            </button>
-          </div>
-          <button
-            onClick={handleContinueShopping}
-            className="mt-4 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 text-gray-900"
-          >
-            Continue Shopping
-          </button>
-        </div>
-        <div className="text-right">
-          <p className="text-gray-900">Sub Total: ₦{subtotal.toFixed(2)}</p>
-          <p className="text-gray-900">Shipping: ₦{shipping.toFixed(2)}</p>
-          <p className="font-semibold text-lg text-gray-900 mt-2">
-            Grand Total: ₦{grandTotal.toFixed(2)}
-          </p>
-          <Link href="/checkout">
-            <button className="mt-4 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-              Proceed to Checkout
-            </button>
-          </Link>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

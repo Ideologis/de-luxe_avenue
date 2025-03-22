@@ -34,3 +34,32 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Image Handling
+
+This project no longer uses Payload CMS for image management. Instead, images should be handled directly in the frontend:
+
+### Adding Images
+
+1. Place image files directly in the `/public/images` directory
+2. Reference images in your components using the Next.js Image component:
+
+```jsx
+import Image from "next/image";
+
+// Example usage
+<Image
+  src="/images/your-image.jpg"
+  alt="Description"
+  width={500}
+  height={300}
+/>;
+```
+
+### Image Organization
+
+- Product images: `/public/images/products/`
+- Banner images: `/public/images/banners/`
+- Category images: `/public/images/categories/`
+
+When adding new images, make sure they are optimized for web use to maintain good performance.

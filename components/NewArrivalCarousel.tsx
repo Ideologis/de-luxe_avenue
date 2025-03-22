@@ -1,38 +1,36 @@
-'use client'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation } from 'swiper/modules'
-import { motion } from 'framer-motion'
-import { useAppDispatch, useAppSelector } from '@/store/hook'
-import { addToCart, generateProductKey } from '@/store/features/cartSlice'
-import { toast } from 'react-toastify'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'react-toastify/dist/ReactToastify.css'
-import React from 'react'
+"use client";
+import {useEffect} from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import { motion } from "framer-motion";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { setLoading } from "@/store/features/loadingSlice";
+import { addToCart, generateProductKey } from "@/store/features/cartSlice";
+import { toast } from "react-toastify";
+import { newArrivals } from "@/utils/mockData";
+import "swiper/css";
+import "swiper/css/navigation";
+import "react-toastify/dist/ReactToastify.css";
 
 type NewArrivalItem = {
-  image: string
-  title: string
-  price: number
-}
+  image: string;
+  title: string;
+  price: number;
+};
 
-interface NewArrivalCarouselProps {
-  newArrivals: NewArrivalItem[]
-}
-
-const NewArrivalCarousel: React.FC<NewArrivalCarouselProps> = ({
-  newArrivals
-}) => {
-  const dispatch = useAppDispatch()
-
-  const cartItems = useAppSelector(state => state.cart.items)
+const NewArrivalCarousel: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
+   useEffect(() => {
+     dispatch(setLoading(false));
+   }, [dispatch]);
 
   const handleAddToCart = (item: NewArrivalItem) => {
-    const productKey = generateProductKey(item)
+    const productKey = generateProductKey(item);
     if (cartItems[productKey]) {
-      toast.info(`${item.title} is already in your cart!`)
+      toast.info(`${item.title} is already in your cart!`);
     } else {
       dispatch(
         addToCart({
@@ -40,12 +38,12 @@ const NewArrivalCarousel: React.FC<NewArrivalCarouselProps> = ({
           title: item.title,
           price: item.price,
           quantity: 1,
-          feedback: ''
+          feedback: "",
         })
-      )
-      toast.success(`${item.title} added to cart!`)
+      );
+      toast.success(`${item.title} added to cart!`);
     }
-  }
+  };
 
   return (
     <div className="px-8 py-4">
@@ -89,17 +87,17 @@ const NewArrivalCarousel: React.FC<NewArrivalCarouselProps> = ({
             >
               <div className="flex flex-col space-y-3">
                 <motion.div
-                  className="relative w-full h-64 overflow-hidden" // Adjusted for proper fitting
+                  className="relative w-full h-64 overflow-hidden"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3 }}
                 >
                   <Image
                     src={item.image}
                     alt={item.title}
-                    width={640} // Added width for proper fitting
-                    height={300} // Added height for proper fitting
-                    layout="intrinsic" // Changed to fill for proper fitting
-                    objectFit="cover" // Ensures the image covers the container
+                    width={640}
+                    height={300}
+                    layout="intrinsic"
+                    objectFit="cover"
                     unoptimized={true}
                     className="rounded-lg"
                   />
@@ -131,6 +129,6 @@ const NewArrivalCarousel: React.FC<NewArrivalCarouselProps> = ({
       </Swiper>
     </div>
   );
-}
+};
 
-export default NewArrivalCarousel
+export default NewArrivalCarousel;

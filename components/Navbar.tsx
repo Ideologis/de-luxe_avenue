@@ -1,19 +1,14 @@
 "use client";
-import React from "react";
 import Link from "next/link";
-import { MdShoppingBasket } from "react-icons/md";
-import { BsHeart } from "react-icons/bs";
-import { CiUser } from "react-icons/ci";
-import { FiSearch } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { setLoading } from "@/store/features/loadingSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 
 const NavBar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [hasScrolled, setHasScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [hasScrolled, setHasScrolled] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -30,12 +25,12 @@ const NavBar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
+
   const handleCartNavigation = () => {
     dispatch(setLoading(true));
     router.push("/cart");
   };
-  
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     document.body.style.overflow = !isOpen ? "hidden" : "auto";
@@ -61,29 +56,43 @@ const NavBar = () => {
               <span>DE-LUXE</span>
             </Link>
           </section>
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            <div className="w-6 h-5 relative flex flex-col justify-between">
-              <span
-                className={`w-full h-0.5 bg-black transition-all duration-300 ${
-                  isOpen ? "rotate-45 translate-y-2" : ""
-                }`}
-              />
-              <span
-                className={`w-full h-0.5 bg-black transition-all duration-300 ${
-                  isOpen ? "opacity-0" : ""
-                }`}
-              />
-              <span
-                className={`w-full h-0.5 bg-black transition-all duration-300 ${
-                  isOpen ? "-rotate-45 -translate-y-2" : ""
-                }`}
-              />
-            </div>
-          </button>
+          <div className="flex items-center">
+            <Link
+              href="/cart"
+              onClick={handleCartNavigation}
+              className="relative p-2 mr-2 md:hidden hover:bg-gray-100 rounded-full transition-colors duration-200"
+            >
+              🛒
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
+            <button
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+            >
+              <div className="w-6 h-5 relative flex flex-col justify-between">
+                <span
+                  className={`w-full h-0.5 bg-black transition-all duration-300 ${
+                    isOpen ? "rotate-45 translate-y-2" : ""
+                  }`}
+                />
+                <span
+                  className={`w-full h-0.5 bg-black transition-all duration-300 ${
+                    isOpen ? "opacity-0" : ""
+                  }`}
+                />
+                <span
+                  className={`w-full h-0.5 bg-black transition-all duration-300 ${
+                    isOpen ? "-rotate-45 -translate-y-2" : ""
+                  }`}
+                />
+              </div>
+            </button>
+          </div>
 
           {/* Mobile slide-out menu */}
           <div
@@ -118,11 +127,12 @@ const NavBar = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-gray-100 rounded-lg py-3 pl-4 pr-10 focus:outline-none"
                 />
-                <FiSearch
+                <span
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                   aria-hidden="true"
-                
-                />
+                >
+                  🔍
+                </span>
               </div>
 
               {/* Mobile Navigation Links */}
@@ -143,16 +153,17 @@ const NavBar = () => {
               {/* Mobile Action Buttons */}
               <div className="flex items-center space-x-6 mt-8">
                 <button className="p-2 hover:bg-gray-100 rounded-full">
-                  <BsHeart size={24} />
+                  ❤️
                 </button>
                 <button className="p-2 hover:bg-gray-100 rounded-full">
-                  <CiUser size={24} />
+                  👤
                 </button>
                 <Link
                   href="/cart"
+                  onClick={toggleMenu}
                   className="relative p-2 hover:bg-gray-100 rounded-full"
                 >
-                  <MdShoppingBasket size={24} />
+                  🛒
                   {cartItemCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                       {cartItemCount}
@@ -184,25 +195,27 @@ const NavBar = () => {
                 placeholder="Search"
                 className="w-full bg-gray-100 rounded-md py-2 pl-4 pr-10 focus:outline-none"
               />
-              <FiSearch
+              <span
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                 aria-hidden="true"
-              />
+              >
+                🔍
+              </span>
             </div>
           </div>
           <section className="navIcons hidden md:flex items-center space-x-6 px-3">
             <button className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200">
-              <BsHeart size={20} />
+              ❤️
             </button>
             <button className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200">
-              <CiUser size={20} />
+              👤
             </button>
             <Link
               href="/cart"
               onClick={handleCartNavigation}
               className="relative p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
             >
-              <MdShoppingBasket size={20} />
+              🛒
               {cartItemCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {cartItemCount}

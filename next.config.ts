@@ -1,28 +1,11 @@
-import NextConfig from "next";
-import { withPayload } from "@payloadcms/next/withPayload";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
   images: {
-    deviceSizes: [320, 420, 768, 1024, 1200],
-    imageSizes: [16, 32, 48, 64, 96],
-  },
-  experimental: {
-    reactCompiler: false,
+    domains: ['example.com'],
   },
 };
 
-// Wrap your `nextConfig` with the `withPayload` plugin
-export default withPayload(nextConfig);
-// import { withPayload } from "@payloadcms/next/withPayload";
+export default nextConfig;
 
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//   // Your Next.js config here
-//   experimental: {
-//     reactCompiler: false,
-//   },
-// };
-
-// // Make sure you wrap your `nextConfig`
-// // with the `withPayload` plugin
-// export default withPayload(nextConfig);
