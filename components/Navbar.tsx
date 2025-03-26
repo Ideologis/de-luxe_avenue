@@ -37,10 +37,9 @@ const NavBar = () => {
   };
 
   const navLinks = [
-    { name: "Shop", href: "/shop" },
-    { name: "Men", href: "/men" },
-    { name: "Women", href: "/women" },
-    { name: "Combos", href: "/combos" },
+    { name: "Formal", href: "#formal" },
+    { name: "Casual", href: "#casual" },
+    { name: "New Arrivals", href: "#new-arrivals" },
   ];
 
   return (
@@ -180,7 +179,8 @@ const NavBar = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className="block py-4 md:py-0 hover:text-gray-900 px-3 text-sm font-medium"
+                className="block py-4 md:py-0 text-sm font-medium px-3 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900 active:bg-gray-300"
+            
                 passHref
               >
                 {link.name}

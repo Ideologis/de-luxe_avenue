@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
 import { updateQuantity, removeFromCart } from "@/store/features/cartSlice";
 import { setLoading } from "@/store/features/loadingSlice";
+import { addFeedback } from "@/store/features/feedbackSlice";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -27,11 +28,27 @@ export default function CartPage() {
     dispatch(setLoading(false));
   }, [dispatch]);
 
-  const [discountCode, setDiscountCode] = useState("");
+  const [feedbackName, setFeedbackName] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
 
   const handleContinueShopping = () => {
     dispatch(setLoading(true));
     router.push("/");
+  };
+
+  const handleSubmitFeedback = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (feedbackName.trim() && feedbackMessage.trim()) {
+      dispatch(
+        addFeedback({
+          name: feedbackName,
+          message: feedbackMessage,
+        })
+      );
+      // Clear the form after submission
+      setFeedbackName("");
+      setFeedbackMessage("");
+    }
   };
 
   // Calculate totals based on cart state
@@ -155,23 +172,37 @@ export default function CartPage() {
             <>
               <div className="bg-white p-6 rounded-2xl shadow mb-6 mt-6">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  Discount Code
+                  Share Your Feedback
                 </h3>
                 <p className="text-base text-gray-500 mb-4">
-                  Enter your coupon code if you have one
+                  We value your opinion! Let us know what you think
                 </p>
-                <div className="flex flex-col space-y-4">
+                <form
+                  onSubmit={handleSubmitFeedback}
+                  className="flex flex-col space-y-4"
+                >
                   <input
                     type="text"
-                    value={discountCode}
-                    onChange={(e) => setDiscountCode(e.target.value)}
+                    value={feedbackName}
+                    onChange={(e) => setFeedbackName(e.target.value)}
                     className="p-4 border border-gray-300 rounded-xl w-full text-base"
-                    placeholder="Enter coupon code"
+                    placeholder="Your Name"
+                    required
                   />
-                  <button className="w-full py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-md text-lg font-medium">
-                    Apply Coupon
+                  <textarea
+                    value={feedbackMessage}
+                    onChange={(e) => setFeedbackMessage(e.target.value)}
+                    className="p-4 border border-gray-300 rounded-xl w-full text-base min-h-[100px]"
+                    placeholder="Your Message"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="w-full py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-md text-lg font-medium"
+                  >
+                    Submit Feedback
                   </button>
-                </div>
+                </form>
               </div>
 
               <div className="bg-white p-6 rounded-2xl shadow mb-6">
@@ -324,23 +355,37 @@ export default function CartPage() {
         {cartItems.length > 0 && (
           <div className="bg-white p-6 rounded-xl shadow-lg grid grid-cols-2 gap-4">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Discount Code
+              Share Your Feedback
             </h3>
             <p className="text-base text-gray-600 mb-4">
-              Got a coupon? Enter it here!
+              We value your opinion! Let us know what you think
             </p>
-            <div className="flex flex-col space-y-4 col-span-2">
+            <form
+              onSubmit={handleSubmitFeedback}
+              className="flex flex-col space-y-4 col-span-2"
+            >
               <input
                 type="text"
-                value={discountCode}
-                onChange={(e) => setDiscountCode(e.target.value)}
+                value={feedbackName}
+                onChange={(e) => setFeedbackName(e.target.value)}
                 className="p-4 border border-gray-300 rounded-xl w-full text-base focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
-                placeholder="Enter coupon code"
+                placeholder="Your Name"
+                required
               />
-              <button className="w-full py-4 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-xl hover:from-purple-600 hover:to-purple-800 transition duration-300 shadow-lg text-lg font-semibold">
-                Apply Coupon
+              <textarea
+                value={feedbackMessage}
+                onChange={(e) => setFeedbackMessage(e.target.value)}
+                className="p-4 border border-gray-300 rounded-xl w-full text-base focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200 min-h-[120px]"
+                placeholder="Your Message"
+                required
+              />
+              <button
+                type="submit"
+                className="w-full py-4 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-xl hover:from-purple-600 hover:to-purple-800 transition duration-300 shadow-lg text-lg font-semibold"
+              >
+                Submit Feedback
               </button>
-            </div>
+            </form>
             <button
               onClick={handleContinueShopping}
               className="w-full mt-4 py-4 border border-gray-300 rounded-xl hover:bg-gray-100 text-gray-800 transition duration-200 text-lg font-semibold col-span-2"

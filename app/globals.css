@@ -63,6 +63,10 @@ body {
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-behavior-duration: 10ms; /* Faster scroll duration */
+  }
   * {
     @apply border-border;
   }
@@ -107,6 +111,12 @@ body {
   }
   .mr-safe {
     margin-right: env(safe-area-inset-right);
+  }
+
+  /* Smooth scrolling offset for sections with an id */
+  section[id] {
+    scroll-margin-top: 80px;
+    scroll-snap-margin-top: 80px; /* For older browsers */
   }
 }
 

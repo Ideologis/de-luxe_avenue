@@ -1,5 +1,5 @@
 "use client";
-import {useEffect} from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,9 +7,11 @@ import { Navigation } from "swiper/modules";
 import { motion } from "framer-motion";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { setLoading } from "@/store/features/loadingSlice";
+import { Heart } from "lucide-react";
+
 import { addToCart, generateProductKey } from "@/store/features/cartSlice";
 import { toast } from "react-toastify";
-import { newArrivals } from "@/utils/mockData";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,13 +21,16 @@ type NewArrivalItem = {
   title: string;
   price: number;
 };
-
-const NewArrivalCarousel: React.FC = () => {
+type ProductCarouselProps = {
+  items: NewArrivalItem[]; // Accept items as a prop
+  title: string; // Accept title as a prop
+};
+const ProductCarousel: React.FC<ProductCarouselProps> = ({ items, title }) => {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
-   useEffect(() => {
-     dispatch(setLoading(false));
-   }, [dispatch]);
+  useEffect(() => {
+    dispatch(setLoading(false));
+  }, [dispatch]);
 
   const handleAddToCart = (item: NewArrivalItem) => {
     const productKey = generateProductKey(item);
@@ -53,7 +58,7 @@ const NewArrivalCarousel: React.FC = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="text-2xl font-bold text-left m-8 px-4"
       >
-        New Arrival
+        {title}
       </motion.h2>
       <Swiper
         modules={[Navigation]}
@@ -77,7 +82,7 @@ const NewArrivalCarousel: React.FC = () => {
         }}
         className="w-full"
       >
-        {newArrivals.map((item, index) => (
+        {items.map((item, index) => (
           <SwiperSlide key={index}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -91,11 +96,17 @@ const NewArrivalCarousel: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3 }}
                 >
+                  <button
+                    className="absolute top-3 right-3 z-10 rounded-full p-1.5 bg-white/80 hover:bg-white transition-colors"
+                    aria-label="Add to favorites"
+                  >
+                    <Heart className="h-5 w-5 text-gray-600 hover:text-red-500 transition-colors" />
+                  </button>
                   <Image
                     src={item.image}
                     alt={item.title}
-                    width={640}
-                    height={300}
+                    width={270}
+                    height={200}
                     layout="intrinsic"
                     objectFit="cover"
                     unoptimized={true}
@@ -131,4 +142,4 @@ const NewArrivalCarousel: React.FC = () => {
   );
 };
 
-export default NewArrivalCarousel;
+export default ProductCarousel;

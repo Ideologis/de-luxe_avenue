@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 export default function AdsSection () {
   return (
-    <section className='w-full overflow-hidden m-8 p-6 flex justify-center items-center'>
+    <section className='w-full overflow-hidden my-8 py-6 flex justify-center items-center'>
       <div className='grid grid-cols-1 md:grid-cols-2'>
         <div className="LeftSection flex flex-col justify-center items-start p-8 text-white bg-[url('/forestBackground.png')] bg-cover bg-center rounded-l-lg">
           <div className='relative max-w-md'>

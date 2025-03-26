@@ -51,3 +51,70 @@ export const newArrivals = [
     price: 79.99,
   },
 ];
+
+// formal shoes
+export const formalShoes = [
+  {
+    image: "/formal-01.jpg", // Updated to get image from public folder
+    title: "Suede",
+    price: 80000,
+  },
+  {
+    image: "/formal-02.jpg", // Updated to get image from public folder
+    title: "Classic Black Formal Shoes",
+    price: 199.99,
+  },
+  {
+    image: "/formal-03.jpg", // Updated to get image from public folder
+    title: "Brown Leather Oxfords",
+    price: 179.99,
+  },
+  {
+    image: "/formal-04.jpg", // Updated to get image from public folder
+    title: "Stylish Patent Leather Shoes",
+    price: 209.99,
+  },
+  {
+    image: "/formal-05.jpg", // Updated to get image from public folder
+    title: "Comfortable Dress Loafers",
+    price: 159.99,
+  },
+  {
+    image: "/formal-06.jpg", // Updated to get image from public folder
+    title: "Elegant Wingtip Shoes",
+    price: 189.99,
+  },
+];
+//Casual shoes
+export const casualShoes = [
+  {
+    image: "/casual-01.jpg", // Updated to get image from public folder
+    title: "Suede",
+    price: 80000,
+  },
+  {
+    image: "/casual-02.jpg", // Updated to get image from public folder
+    title: "Classic Black Casual Shoes",
+    price: 199.99,
+  },
+  {
+    image: "/casual-03.jpg", // Updated to get image from public folder
+    title: "Brown Leather Oxfords",
+    price: 179.99,
+  },
+  {
+    image: "/casual-04.jpg", // Updated to get image from public folder
+    title: "Stylish Patent Leather Shoes",
+    price: 209.99,
+  },
+  {
+    image: "/casual-05.jpg", // Updated to get image from public folder
+    title: "Comfortable Dress Loafers",
+    price: 159.99,
+  },
+  {
+    image: "/casual-06.jpg", // Updated to get image from public folder
+    title: "Elegant Wingtip Shoes",
+    price: 189.99,
+  },
+];
