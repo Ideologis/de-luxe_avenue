@@ -27,11 +27,10 @@ interface OrderData {
   grandTotal: number;
   currency: string;
 }
-interface PageProps {
-  params: {
-    slug?: string[] | undefined;
+interface OrderPageProps {
+  params?: {
+    slug?: string[];
   };
-  searchParams?: Record<string, string | string[] | undefined>;
 }
 const useOrderData = (orderSlug?: string) => {
   const cartItems = useAppSelector(
@@ -83,17 +82,10 @@ const useOrderData = (orderSlug?: string) => {
   }
 };
 
-const OrderPage = ({ params }: PageProps) => {
+const OrderPage = ({ params }: OrderPageProps) => {
   const [copied, setCopied] = useState(false);
-  const slug = Array.isArray(params.slug) ? params.slug[0] : undefined;
-  const {
-    items,
-    subtotal,
-    shipping,
-    grandTotal,
-    currency,
-    isConfirmationView,
-  } = useOrderData(slug);
+ const { items, subtotal, shipping, grandTotal, currency, isConfirmationView } =
+   useOrderData(params?.slug?.[0]);
 
   const whatsappLink = generateWhatsAppCheckoutLink(
     items,
