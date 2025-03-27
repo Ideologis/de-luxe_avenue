@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface CartItem {
+// import { generateWhatsAppCheckoutLink } from "@/lib/checkout";
+// import { createSelector } from "@reduxjs/toolkit";
+
+export interface CartItem {
   productKey: string;
   image: string;
   title: string;
@@ -77,6 +80,19 @@ export const selectCartItemCount = (state: { cart: CartState }): number => {
     (total, item) => total + item.quantity,
     0
   );
+};
+
+// Selector to get the grand total of items in the cart
+export const selectGrandTotal = (state: { cart: CartState }): number => {
+  const subtotal = Object.values(state.cart.items).reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const shipping = Object.values(state.cart.items).reduce(
+    (sum, item) => sum + (item.quantity === 1 ? 5.0 : 0),
+    0
+  );
+  return subtotal + shipping;
 };
 
 export default cartSlice.reducer;

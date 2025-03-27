@@ -1,11 +1,17 @@
 "use client";
 import Image from "next/image";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
-import { updateQuantity, removeFromCart } from "@/store/features/cartSlice";
-import { setLoading } from "@/store/features/loadingSlice";
+import {
+  updateQuantity,
+  removeFromCart,
+  selectGrandTotal,
+} from "@/store/features/cartSlice";
+
 import { addFeedback } from "@/store/features/feedbackSlice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 interface CartItem {
@@ -14,40 +20,64 @@ interface CartItem {
   title: string;
   price: number;
   quantity: number; // Added quantity property to CartItem interface
+  feedback: string; // Added feedback property to CartItem interface
 }
 
 export default function CartPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const cartItems = useAppSelector(
     (state: { cart: { items: { [key: string]: CartItem } } }) =>
       Object.values(state.cart.items)
   );
 
-  useEffect(() => {
-    dispatch(setLoading(false));
-  }, [dispatch]);
+  const grandTotal = useAppSelector(selectGrandTotal);
+
+ 
+
+const handleCheckout = () => {
+  setIsLoading(true);
+
+  // Simulate a small delay for better UX
+  setTimeout(() => {
+    setIsLoading(false);
+    router.push("/order"); // Changed "/Order" to "/order" to match the correct route
+  }, 5000);
+};
 
   const [feedbackName, setFeedbackName] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
 
   const handleContinueShopping = () => {
-    dispatch(setLoading(true));
+    
     router.push("/");
   };
 
   const handleSubmitFeedback = (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (feedbackName.trim() && feedbackMessage.trim()) {
-      dispatch(
-        addFeedback({
-          name: feedbackName,
-          message: feedbackMessage,
-        })
-      );
-      // Clear the form after submission
-      setFeedbackName("");
-      setFeedbackMessage("");
+      // Assuming you want to add feedback to the first item in the cart
+      const firstItemKey = cartItems[0]?.productKey; // Get the first item's key
+      if (firstItemKey) {
+        dispatch(
+          addFeedback({
+            name: feedbackName,
+            message: feedbackMessage,
+          })
+        );
+        dispatch(
+          updateQuantity({
+            productKey: firstItemKey,
+            quantity: 1,
+            // feedback: feedbackMessage,
+          })
+        ); // Update feedback
+        // Clear the form after submission
+        setFeedbackName("");
+        setFeedbackMessage("");
+      }
     }
   };
 
@@ -60,7 +90,6 @@ export default function CartPage() {
     (sum, item) => sum + (item.quantity === 1 ? 5.0 : 0),
     0
   );
-  const grandTotal = subtotal + shipping;
 
   const handleQuantityChange = (productKey: string, quantity: number) => {
     // Ensure quantity is at least 1
@@ -269,7 +298,7 @@ export default function CartPage() {
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center py-12">
               <p className="text-center text-gray-600 mb-6 text-lg font-medium">
-                Your cart is empty. Let’s fill it up!
+                Your cart is empty. Lets fill it up!
               </p>
               <button
                 onClick={handleContinueShopping}
@@ -416,10 +445,26 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
-            <Link href="/checkout" className="block w-full col-span-2">
-              <button className="w-full py-4 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-xl hover:from-purple-600 hover:to-purple-800 transition duration-300 shadow-lg text-lg font-semibold">
-                Proceed to Checkout
-              </button>
+            <Link href="order" className="block w-full col-span-2">
+              <Button
+                onClick = {handleCheckout}
+                // disabled={items.length === 0 || isLoading}
+                className="w-full py-6 mt-2 shadow-sm group"
+              >
+                <span className="flex items-center">
+                  {isLoading ? (
+                    <span className="animate-pulse-gentle">Processing...</span>
+                  ) : (
+                    <>
+                      Checkout
+                      <ArrowRight
+                        size={16}
+                        className="ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                      />
+                    </>
+                  )}
+                </span>
+              </Button>
             </Link>
           </div>
         )}

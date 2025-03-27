@@ -2,8 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { setLoading } from "@/store/features/loadingSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { useAppSelector } from "@/store/hook";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -11,7 +10,7 @@ const NavBar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const router = useRouter();
-  const dispatch = useAppDispatch();
+ 
   const cartItems = useAppSelector((state) => state.cart.items);
 
   // Calculate total unique items in cart
@@ -27,7 +26,7 @@ const NavBar = () => {
   }, []);
 
   const handleCartNavigation = () => {
-    dispatch(setLoading(true));
+    
     router.push("/cart");
   };
 
