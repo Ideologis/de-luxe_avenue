@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAppSelector } from "@/store/hook";
 import { selectGrandTotal } from "@/store/features/cartSlice";
 import { generateWhatsAppCheckoutLink } from "@/lib/checkout";
@@ -114,22 +114,6 @@ const OrderPage = ({ slug }: OrderPageProps) => {
       .catch(() => toast.error("Failed to copy link"));
   };
 
-  const [orderDetails, setOrderDetails] = useState(null);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const orderData = urlParams.get("order"); // Adjust this based on how you're passing the data
-
-    if (orderData) {
-      try {
-        const parsedData = JSON.parse(decodeURIComponent(orderData));
-        setOrderDetails(parsedData);
-      } catch (error) {
-        console.error("Error parsing order data:", error);
-      }
-    }
-  }, []);
-
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col space-y-6 max-w-3xl mx-auto">
@@ -155,37 +139,33 @@ const OrderPage = ({ slug }: OrderPageProps) => {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            {orderDetails ? (
-              <div className="space-y-4">
-                {items.map((item: CartItem) => (
-                  <div key={item.productKey} className="flex items-start gap-4">
-                    {item.image && (
-                      <div className="relative h-16 w-16 rounded-md overflow-hidden border">
-                        <Image
-                          src={item.image}
-                          alt={item.title}
-                          fill
-                          className="object-cover"
-                          sizes="64px"
-                        />
-                      </div>
-                    )}
-                    <div className="flex-1">
-                      <p className="font-medium">{item.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Quantity: {item.quantity}
-                      </p>
+            <div className="space-y-4">
+              {items.map((item: CartItem) => (
+                <div key={item.productKey} className="flex items-start gap-4">
+                  {item.image && (
+                    <div className="relative h-16 w-16 rounded-md overflow-hidden border">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        className="object-cover"
+                        sizes="64px"
+                      />
                     </div>
-                    <p className="font-medium">
-                      {currency}
-                      {(item.price * item.quantity).toFixed(2)}
+                  )}
+                  <div className="flex-1">
+                    <p className="font-medium">{item.title}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Quantity: {item.quantity}
                     </p>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p>Loading order details...</p>
-            )}
+                  <p className="font-medium">
+                    {currency}
+                    {(item.price * item.quantity).toFixed(2)}
+                  </p>
+                </div>
+              ))}
+            </div>
 
             <Separator />
 
