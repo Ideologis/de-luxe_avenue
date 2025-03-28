@@ -107,8 +107,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ items, title }) => {
                     alt={item.title}
                     width={270}
                     height={200}
-                    layout="intrinsic"
-                    objectFit="cover"
+                   
                     unoptimized={true}
                     className="rounded-lg"
                   />

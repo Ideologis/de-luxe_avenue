@@ -34,29 +34,26 @@ export default function CartPage() {
 
   const grandTotal = useAppSelector(selectGrandTotal);
 
- 
+  const handleCheckout = () => {
+    setIsLoading(true);
 
-const handleCheckout = () => {
-  setIsLoading(true);
-
-  // Simulate a small delay for better UX
-  setTimeout(() => {
-    setIsLoading(false);
-    router.push("/order"); // Changed "/Order" to "/order" to match the correct route
-  }, 5000);
-};
+    // Simulate a small delay for better UX
+    setTimeout(() => {
+      setIsLoading(false);
+      router.push("/order"); // Changed "/Order" to "/order" to match the correct route
+    }, 5000);
+  };
 
   const [feedbackName, setFeedbackName] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
 
   const handleContinueShopping = () => {
-    
     router.push("/");
   };
 
   const handleSubmitFeedback = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (feedbackName.trim() && feedbackMessage.trim()) {
       // Assuming you want to add feedback to the first item in the cart
       const firstItemKey = cartItems[0]?.productKey; // Get the first item's key
@@ -261,10 +258,27 @@ const handleCheckout = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Link href="/checkout" className="block w-full">
-                    <button className="w-full py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-md text-lg font-medium">
-                      Proceed to Checkout
-                    </button>
+                  <Link href="order" className="block w-full">
+                    <Button
+                      onClick={handleCheckout}
+                      className="w-full py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-md text-lg font-medium"
+                    >
+                      <span className="flex items-center justify-center">
+                        {isLoading ? (
+                          <span className="animate-pulse-gentle">
+                            Processing...
+                          </span>
+                        ) : (
+                          <>
+                            Checkout
+                            <ArrowRight
+                              size={16}
+                              className="ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                            />
+                          </>
+                        )}
+                      </span>
+                    </Button>
                   </Link>
 
                   <button
@@ -447,7 +461,7 @@ const handleCheckout = () => {
             </div>
             <Link href="order" className="block w-full col-span-2">
               <Button
-                onClick = {handleCheckout}
+                onClick={handleCheckout}
                 // disabled={items.length === 0 || isLoading}
                 className="w-full py-6 mt-2 shadow-sm group"
               >
